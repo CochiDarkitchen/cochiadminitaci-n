@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COCHI — Administración</title>
+<style>
+:root{
+  --bg:#1c1a17; --bg2:#242019; --bg3:#2e2820; --border:#3d362b;
+  --text:#f3ede2; --dim:#b3a591; --accent:#e8a33d; --accent-d:#c8842a;
+  --green:#7db07d; --blue:#7ba3b8; --red:#c9705f; --yellow:#d9c25e;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button,input,select,textarea{font-family:inherit;font-size:16px;color:var(--text)}
+input,select,textarea{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;width:100%}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
+label{font-size:13px;color:var(--dim);display:block;margin-bottom:4px}
+.field{margin-bottom:12px}
+button{cursor:pointer;border:none;border-radius:8px;padding:9px 16px;font-weight:600}
+button:disabled{opacity:.6;cursor:default}
+.btn-primary{background:var(--accent);color:#241a08}
+.btn-primary:hover{background:var(--accent-d)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--accent)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid var(--red)}
+.btn-sm{padding:5px 10px;font-size:13px}
+a{color:var(--accent)}
+
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:36px 32px;width:100%;max-width:360px}
+.login-box h1{font-size:26px;margin-bottom:2px}
+.login-box p{color:var(--dim);font-size:14px;margin-bottom:22px}
+.login-err{color:var(--red);font-size:13px;margin-top:8px;min-height:16px}
+
+/* shell */
+#shell{display:flex;min-height:100vh}
+#sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:20px 14px;flex-shrink:0}
+#sidebar h1{font-size:20px;margin-bottom:2px}
+#sidebar .tag{color:var(--dim);font-size:12px;margin-bottom:22px}
+.nav-item{display:block;width:100%;text-align:left;background:none;border:none;color:var(--dim);padding:10px 12px;border-radius:8px;margin-bottom:2px;font-weight:500}
+.nav-item.active{background:var(--bg3);color:var(--accent)}
+.nav-item:hover{color:var(--text)}
+#logout{margin-top:20px;width:100%}
+main{flex:1;padding:26px 30px;max-width:1100px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.topbar h2{font-size:22px}
+#mobile-nav{display:none}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.card .label{color:var(--dim);font-size:13px}
+.card .val{font-size:24px;font-weight:700;margin-top:4px}
+.card .sub{font-size:12px;color:var(--dim);margin-top:2px}
+
+/* tables */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;color:var(--dim);padding:12px 14px;border-bottom:1px solid var(--border)}
+td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:14px}
+tr:last-child td{border-bottom:none}
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.toolbar input,.toolbar select{width:auto;min-width:140px}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600}
+.b-pendiente{background:#4a4126;color:var(--yellow)}
+.b-preparacion{background:#2c3d47;color:var(--blue)}
+.b-lista{background:#2c3d47;color:var(--blue)}
+.b-delivery{background:#2c3d47;color:var(--blue)}
+.b-completada{background:#2e4530;color:var(--green)}
+.b-cancelada{background:#4a2c26;color:var(--red)}
+.empty{padding:40px;text-align:center;color:var(--dim)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;z-index:50}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:26px;width:100%;max-width:560px}
+.modal h3{margin-bottom:16px}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* order builder */
+.ob-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.prod-pick{display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid var(--border)}
+.prod-pick:last-child{border-bottom:none}
+.cart-line{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px solid var(--border)}
+.cart-line:last-child{border-bottom:none}
+.summary-line{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.summary-line.total{font-weight:700;font-size:17px;border-top:1px solid var(--border);margin-top:8px;padding-top:10px}
+.qty-ctrl{display:flex;align-items:center;gap:6px}
+.qty-ctrl button{padding:2px 9px}
+
+/* ticket */
+#ticket{display:none}
+@media print{
+  body>*:not(#ticket-overlay){display:none!important}
+  #ticket-overlay{position:static;background:none;padding:0}
+  #ticket{display:block!important;width:58mm;font-family:monospace;font-size:11px;color:#000;padding:4px}
+  #ticket hr{border:none;border-top:1px dashed #000;margin:6px 0}
+  #ticket .c{text-align:center}
+  #ticket .row{display:flex;justify-content:space-between}
+}
+.ticket-preview .c{text-align:center}
+.ticket-preview .row{display:flex;justify-content:space-between;padding:2px 0}
+.ticket-preview hr{border:none;border-top:1px dashed #999;margin:6px 0}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:100;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.err{border-color:var(--red);color:var(--red)}
+
+@media (max-width:820px){
+  #sidebar{display:none}
+  main{padding:16px;max-width:100%}
+  #mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:40}
+  #mobile-nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:var(--dim);padding:8px 2px;border-radius:0}
+  #mobile-nav button.active{color:var(--accent)}
+  #shell{padding-bottom:60px}
+  .ob-grid{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .panel{overflow-x:auto}
+  table{min-width:540px}
+  .card .val{font-size:20px}
+  #toast{bottom:70px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="ticket-overlay"><div id="ticket"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>
